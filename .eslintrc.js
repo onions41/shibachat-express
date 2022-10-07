@@ -15,6 +15,7 @@ module.exports = {
       anonymous: 'never',
       named: 'never',
       asyncArrow: 'always'
-    }]
+    }],
+    'arrow-parens': ['error', 'always']
   }
 }
