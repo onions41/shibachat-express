@@ -38,6 +38,8 @@ async function startApolloServer(typeDefs, resolvers) {
     resolvers,
     csrfPrevention: true,
     cache: 'bounded',
+    // Allows schema to be downloaded. TODO: Might want to turn this off in production
+    introspection: true,
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
       // Enables Apollo Explorer on landing page
