@@ -60,8 +60,8 @@ async function startApolloServer(typeDefs, resolvers) {
     (resolve) => httpServer.listen({ port: process.env.PORT }, resolve)
   )
   console.log(
-      `🚀 Server ready at
-      http://localhost:${process.env.PORT}${server.graphqlPath}`
+      // eslint-disable-next-line max-len
+      `🚀 Server ready at http://localhost:${process.env.PORT}${server.graphqlPath}`
   )
 }
 
