@@ -1,0 +1,7 @@
+type Mutation {
+  login(nickname: String!, password: String!): LoginResponse!
+}
+
+type LoginResponse {
+  accessToken: String
+}
