@@ -16,17 +16,21 @@ import { loadFilesSync } from '@graphql-tools/load-files'
 import { mergeTypeDefs, mergeResolvers } from '@graphql-tools/merge'
 
 // Internal imports
-import User from './mockUsers'
+import User from './mockUser'
 
 // process.env
 dotenv.config()
 
 // Get all the files in ./typeDefs and merge them together
-const typesArray = loadFilesSync(path.join(__dirname, './typeDefs'), { extensions: ['graphql'] })
+const typesArray = loadFilesSync(
+  path.join(__dirname, './typeDefs'), { extensions: ['graphql'] }
+)
 const typeDefs = mergeTypeDefs(typesArray)
 
 // Get all the files in ./resolvers and merge them together
-const resolversArray = loadFilesSync(path.join(__dirname, './resolvers'), { extensions: ['js'] })
+const resolversArray = loadFilesSync(
+  path.join(__dirname, './resolvers'), { extensions: ['js'] }
+)
 const resolvers = mergeResolvers(resolversArray)
 
 async function startApolloServer(typeDefs, resolvers) {
@@ -37,10 +41,11 @@ async function startApolloServer(typeDefs, resolvers) {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: { User },
+    context: ({ req, res }) => ({ req, res, User }),
     csrfPrevention: true,
     cache: 'bounded',
-    // Allows schema to be downloaded. TODO: Might want to turn this off in production
+    // Allows schema to be downloaded.
+    // TODO: Might want to turn this off in production
     introspection: true,
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
@@ -51,8 +56,13 @@ async function startApolloServer(typeDefs, resolvers) {
 
   await server.start()
   server.applyMiddleware({ app })
-  await new Promise((resolve) => httpServer.listen({ port: process.env.PORT }, resolve))
-  console.log(`🚀 Server ready at http://localhost:${process.env.PORT}${server.graphqlPath}`)
+  await new Promise(
+    (resolve) => httpServer.listen({ port: process.env.PORT }, resolve)
+  )
+  console.log(
+      `🚀 Server ready at
+      http://localhost:${process.env.PORT}${server.graphqlPath}`
+  )
 }
 
 startApolloServer(typeDefs, resolvers)

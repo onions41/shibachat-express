@@ -24,6 +24,7 @@ module.exports = {
       named: 'never',
       asyncArrow: 'always'
     }],
-    'arrow-parens': ['error', 'always']
+    'arrow-parens': ['error', 'always'],
+    'max-len': 1
   }
 }

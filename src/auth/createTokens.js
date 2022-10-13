@@ -17,6 +17,6 @@ export function createRefreshToken(user) {
   return sign(
     { userId: user.id, tokenVersion: user.tokenVersion },
     process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: '15m' }
+    { expiresIn: '7d' }
   )
 }
