@@ -6,11 +6,11 @@ import find from 'lodash/find'
 
 const User = {
   users: [
-    { id: 1, nickname: 'Homer', password: 'hashed44je89h2eohasd' },
-    { id: 2, nickname: 'Marge', password: 'hashed44jeasgfoapis' },
-    { id: 3, nickname: 'Bart', password: 'hashedssdfdsoapisdrd' },
-    { id: 4, nickname: 'Lisa', password: 'hashesfdsdsgdfpisdqwgerd' },
-    { id: 5, nickname: 'Maggie', password: 'hasheddsdeasgfoapishf78' }
+    { id: 1, nickname: 'Homer', password: '123456' },
+    { id: 2, nickname: 'Marge', password: '123456' },
+    { id: 3, nickname: 'Bart', password: '123456' },
+    { id: 4, nickname: 'Lisa', password: '123456' },
+    { id: 5, nickname: 'Maggie', password: '123456' }
   ],
 
   findUser: function(nickname) {
