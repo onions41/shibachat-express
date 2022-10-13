@@ -16,12 +16,13 @@ import { loadFilesSync } from '@graphql-tools/load-files'
 import { mergeTypeDefs, mergeResolvers } from '@graphql-tools/merge'
 
 // Internal imports
+import User from './mockUsers'
 
 // process.env
 dotenv.config()
 
 // Get all the files in ./typeDefs and merge them together
-const typesArray = loadFilesSync(path.join(__dirname, './typeDefs'), { extensions: ['js'] })
+const typesArray = loadFilesSync(path.join(__dirname, './typeDefs'), { extensions: ['graphql'] })
 const typeDefs = mergeTypeDefs(typesArray)
 
 // Get all the files in ./resolvers and merge them together
@@ -36,6 +37,7 @@ async function startApolloServer(typeDefs, resolvers) {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
+    context: { User },
     csrfPrevention: true,
     cache: 'bounded',
     // Allows schema to be downloaded. TODO: Might want to turn this off in production

@@ -1,5 +1,3 @@
-import User from '../mockUsers'
-
 export default {
   Query: {
     example1: async (_parent, _args, _context) => {
@@ -9,7 +7,7 @@ export default {
       }
     },
 
-    findUser: (_parent, { nickname }, _context) => {
+    findUser: (_parent, { nickname }, { User }) => {
       const result = User.findUser(nickname)
       if (result) {
         return result
