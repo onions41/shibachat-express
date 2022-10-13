@@ -1,7 +1,4 @@
 import { sign } from 'jsonwebtoken'
-import * as dotenv from 'dotenv'
-
-dotenv.config()
 
 // user is a user object with at least the user.id field
 export function createAccessToken(user) {
