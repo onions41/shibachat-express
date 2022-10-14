@@ -27,8 +27,8 @@ module.exports = {
     'arrow-parens': ['error', 'always'],
     'max-len': ['error', {
       ignoreStrings: true,
-      ignoreComments: true,
-      ignoreTrailingComments: true
+      ignoreUrls: true,
+      comments: 120
     }]
   }
 }
