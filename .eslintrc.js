@@ -25,6 +25,10 @@ module.exports = {
       asyncArrow: 'always'
     }],
     'arrow-parens': ['error', 'always'],
-    'max-len': 1
+    'max-len': ['error', {
+      ignoreStrings: true,
+      ignoreComments: true,
+      ignoreTrailingComments: true
+    }]
   }
 }
