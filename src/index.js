@@ -1,8 +1,9 @@
-// Node
+// Module imports
 import path from 'path'
 import http from 'http'
 import express from 'express'
 import * as dotenv from 'dotenv'
+import cors from 'cors'
 
 // Apollo
 import { ApolloServer } from 'apollo-server-express'
@@ -37,6 +38,15 @@ async function startApolloServer(typeDefs, resolvers) {
   // Todo, need to define typeDefs and resovlers. Cors too
 
   const app = express()
+
+  // Apply CORS
+  // Configuration refrence https://github.com/expressjs/cors#configuration-options
+  app.use(cors({
+    origin: process.env.REACT_CLIENT_ORIGIN,
+    // To allow cookie headers
+    credentials: true
+  }))
+
   const httpServer = http.createServer(app)
   const server = new ApolloServer({
     typeDefs,
@@ -55,13 +65,13 @@ async function startApolloServer(typeDefs, resolvers) {
   })
 
   await server.start()
-  server.applyMiddleware({ app })
+  // Turned off CORS here because it has to be enabled before all middlewares.
+  server.applyMiddleware({ app, cors: false })
   await new Promise(
     (resolve) => httpServer.listen({ port: process.env.PORT }, resolve)
   )
   console.log(
-      // eslint-disable-next-line max-len
-      `🚀 Server ready at http://localhost:${process.env.PORT}${server.graphqlPath}`
+    `🚀 Server ready at http://localhost:${process.env.PORT}${server.graphqlPath}`
   )
 }
 
