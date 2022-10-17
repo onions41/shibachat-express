@@ -1,6 +1,8 @@
 type Query {
   example1: Person!
   findUser(nickname: String!): User
+  protected: Boolean!
+  unprotected: Boolean!
 }
 
 type Person {
