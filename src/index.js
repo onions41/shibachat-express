@@ -4,6 +4,7 @@ import http from 'http'
 import express from 'express'
 import * as dotenv from 'dotenv'
 import cors from 'cors'
+import cookieParser from 'cookie-parser'
 
 // Apollo
 import { ApolloServer } from 'apollo-server-express'
@@ -34,9 +35,8 @@ const resolversArray = loadFilesSync(
 )
 const resolvers = mergeResolvers(resolversArray)
 
+// Adds middlewares and starts server
 async function startApolloServer(typeDefs, resolvers) {
-  // Todo, need to define typeDefs and resovlers. Cors too
-
   const app = express()
 
   // Apply CORS
@@ -46,6 +46,9 @@ async function startApolloServer(typeDefs, resolvers) {
     // To allow cookie headers
     credentials: true
   }))
+
+  // Parse cookies
+  app.use(cookieParser())
 
   const httpServer = http.createServer(app)
   const server = new ApolloServer({

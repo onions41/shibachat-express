@@ -29,6 +29,7 @@ module.exports = {
       ignoreStrings: true,
       ignoreUrls: true,
       comments: 120
-    }]
+    }],
+    'no-unused-vars': 1
   }
 }
