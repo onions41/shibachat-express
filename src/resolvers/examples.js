@@ -1,3 +1,5 @@
+import { verify } from 'jsonwebtoken'
+
 export default {
   Query: {
     example1: async (_parent, _args, _context) => {
@@ -17,15 +19,47 @@ export default {
 
     protected: (_parent, _args, { req, res }) => {
       console.log('*Protected Query*: ', 'Hi there******************')
+      let ATPayload
+      try {
+        ATPayload = verify(req.headers['access-token'], process.env.ACCESS_TOKEN_SECRET)
+      } catch (error) {
+        ATPayload = 'INVALID ACCESS TOKEN'
+      }
+
+      let RTPayload
+      try {
+        RTPayload = verify(req.cookies['refresh-token'], process.env.REFRESH_TOKEN_SECRET)
+      } catch (error) {
+        RTPayload = 'INVALID REFRESH TOKEN'
+      }
+
       console.log('*access-token*: ', req.headers['access-token'])
+      console.log('*access-token*: ', ATPayload)
       console.log('*refresh-token*: ', req.cookies['refresh-token'])
+      console.log('*access-token*: ', RTPayload)
       return true
     },
 
     unprotected: (_parent, _args, { req, res }) => {
       console.log('**Unprotected Query**: ', 'Hi there**************************')
-      console.log('**access-token**: ', req.headers['access-token'])
-      console.log('**req.cookies.refresh-token**: ', req.cookies['refresh-token'])
+      let ATPayload
+      try {
+        ATPayload = verify(req.headers['access-token'], process.env.ACCESS_TOKEN_SECRET)
+      } catch (error) {
+        ATPayload = 'INVALID ACCESS TOKEN'
+      }
+
+      let RTPayload
+      try {
+        RTPayload = verify(req.cookies['refresh-token'], process.env.REFRESH_TOKEN_SECRET)
+      } catch (error) {
+        RTPayload = 'INVALID REFRESH TOKEN'
+      }
+
+      console.log('*access-token*: ', req.headers['access-token'])
+      console.log('*access-token*: ', ATPayload)
+      console.log('*refresh-token*: ', req.cookies['refresh-token'])
+      console.log('*access-token*: ', RTPayload)
       return true
     }
   }
