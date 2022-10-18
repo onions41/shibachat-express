@@ -19,6 +19,7 @@ import { mergeTypeDefs, mergeResolvers } from '@graphql-tools/merge'
 
 // Internal imports
 import User from './mockUser'
+import refreshTokens from './auth/refreshTokens'
 
 // process.env
 dotenv.config()
@@ -49,6 +50,9 @@ async function startApolloServer(typeDefs, resolvers) {
 
   // Parse cookies
   app.use(cookieParser())
+
+  // Endpoint for getting new tokens
+  app.post('/refresh-token', refreshTokens)
 
   const httpServer = http.createServer(app)
   const server = new ApolloServer({
