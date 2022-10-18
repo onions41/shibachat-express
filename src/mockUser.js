@@ -18,6 +18,13 @@ const User = {
       this.users, function(o) { return o.nickname === nickname }
     )
     return result
+  },
+
+  findUserById: function(id) {
+    const result = find(
+      this.users, function(o) { return o.id === id }
+    )
+    return result
   }
 }
 
