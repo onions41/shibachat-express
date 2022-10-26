@@ -18,6 +18,7 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module'
   },
+  ignorePatterns: ['/repl'],
   rules: {
     'space-before-function-paren': ['error', {
       anonymous: 'never',
