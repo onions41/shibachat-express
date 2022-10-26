@@ -1,7 +1,5 @@
 type Mutation {
-  login(nickname: String!, password: String!): LoginResponse!
-}
-
-type LoginResponse {
-  accessToken: String
+  login(nickname: String!, password: String!): String!
+  register(nickname: String!, password: String!): String!
+  logout: Boolean!
 }
