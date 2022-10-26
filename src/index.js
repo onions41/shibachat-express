@@ -5,6 +5,7 @@ import express from 'express'
 import * as dotenv from 'dotenv'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
+import { PrismaClient } from '@prisma/client'
 
 // Apollo
 import { ApolloServer } from 'apollo-server-express'
@@ -18,7 +19,6 @@ import { loadFilesSync } from '@graphql-tools/load-files'
 import { mergeTypeDefs, mergeResolvers } from '@graphql-tools/merge'
 
 // Internal imports
-import User from './mockUser'
 import refreshTokens from './auth/refreshTokens'
 
 // process.env
@@ -36,6 +36,9 @@ const resolversArray = loadFilesSync(
 )
 const resolvers = mergeResolvers(resolversArray)
 
+// Get user model
+const prisma = new PrismaClient()
+
 // Adds middlewares and starts server
 async function startApolloServer(typeDefs, resolvers) {
   const app = express()
@@ -52,13 +55,14 @@ async function startApolloServer(typeDefs, resolvers) {
   app.use(cookieParser())
 
   // Endpoint for getting new tokens
+  refreshTokens.bind({}, prisma)
   app.post('/refresh-token', refreshTokens)
 
   const httpServer = http.createServer(app)
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: ({ req, res }) => ({ req, res, User }),
+    context: ({ req, res }) => ({ req, res, prisma }),
     csrfPrevention: true,
     cache: 'bounded',
     // Allows schema to be downloaded.

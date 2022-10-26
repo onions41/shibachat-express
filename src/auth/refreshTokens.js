@@ -7,10 +7,8 @@ import { verify } from 'jsonwebtoken'
 import { createAccessToken, createRefreshToken } from './createTokens'
 import attachRefreshToken from './attachRefreshToken'
 
-import User from '../mockUser'
-
 // Can by async, you'd need to make it async to fetch from database
-export default function refreshTokens(req, res) {
+export default async function refreshTokens(prisma, req, res) {
   console.log('****/refresh-token middleware was hit*******')
   const refreshToken = req.cookies['refresh-token']
 
@@ -29,8 +27,11 @@ export default function refreshTokens(req, res) {
   }
 
   // token is valid and we can send back an access token
-  // TODO: Needs to be replaced with a real model.
-  const user = User.findUserById(payload.userId)
+  const user = await prisma.user.findUnique({
+    where: {
+      id: payload.userId
+    }
+  })
 
   if (!user) {
     return res.send({ ok: false, accessToken: '' })
