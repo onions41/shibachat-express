@@ -1,0 +1,99 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+}
+
+// Model definitions
+
+model User {
+  id Int @id @default(autoincrement())
+  nickname String @unique
+  password String
+  token_version Int @default(0)
+  groups Members[] // m-n with Group
+  groupInvitations GroupInvitations[]
+  groupMessages GroupMessage[]
+  befriendedBy Friends[] @relation("friend") // requestee
+  friends Friends[] @relation("user")
+  requestedBy FriendRequests[] @relation("requestee")
+  requested FriendRequests[] @relation("requester")
+  messagedBy DirectMessages[] @relation("receiver")
+  messaged DirectMessages[] @relation("sender")
+  @@map("users")
+}
+
+model Group {
+  id Int @id @default(autoincrement())
+  name String
+  members Members[]
+  invitedUsers GroupInvitations[]
+  messages GroupMessage[]
+  @@map("groups")
+}
+
+model GroupMessage {
+  id Int @id @default(autoincrement())
+  text_content String
+  sender User @relation(fields: [sender_id], references: [id])
+  sender_id Int
+  group Group @relation(fields: [group_id], references: [id])
+  group_id Int
+  @@map("group_messages")
+}
+
+// User-Group join table
+model Members {
+  user User @relation(fields: [user_id], references: [id])
+  user_id Int
+  group Group @relation(fields: [group_id], references: [id])
+  group_id Int
+  is_admin Boolean @default(false)
+  @@id([user_id, group_id])
+  @@map("members")
+}
+
+model GroupInvitations {
+  group Group @relation(fields: [group_id], references: [id])
+  group_id Int
+  user User @relation(fields: [user_id], references: [id])
+  user_id Int
+  @@id([group_id, user_id])
+  @@map("group_invitations")
+}
+
+// User-User join table
+model Friends {
+  user User @relation("user", fields: [user_id], references: [id])
+  user_id Int
+  friend User @relation("friend", fields: [friend_id], references: [id])
+  friend_id Int
+  @@id([user_id, friend_id])
+  @@map("friends")
+}
+
+model FriendRequests {
+  requester User @relation("requester", fields: [requester_id], references: [id])
+  requester_id Int
+  requestee User @relation("requestee", fields: [requestee_id], references: [id])
+  requestee_id Int
+  @@id([requester_id, requestee_id])
+  @@map("friend_requests")
+}
+
+model DirectMessages {
+  id Int @id @default(autoincrement())
+  text_content String
+  sender User @relation("sender", fields: [sender_id], references: [id])
+  sender_id Int
+  receiver User @relation("receiver", fields: [receiver_id], references: [id])
+  receiver_id Int
+  @@map("direct_messages")
+}
+
