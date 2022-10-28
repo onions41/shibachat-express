@@ -34,9 +34,9 @@ export default {
       }
 
       console.log('*access-token*: ', req.headers['access-token'])
-      console.log('*access-token*: ', ATPayload)
+      console.log('*access-token payload*: ', ATPayload)
       console.log('*refresh-token*: ', req.cookies['refresh-token'])
-      console.log('*access-token*: ', RTPayload)
+      console.log('*refresh-token payload*: ', RTPayload)
       return true
     },
 
@@ -57,9 +57,9 @@ export default {
       }
 
       console.log('*access-token*: ', req.headers['access-token'])
-      console.log('*access-token*: ', ATPayload)
+      console.log('*access-toke payload*: ', ATPayload)
       console.log('*refresh-token*: ', req.cookies['refresh-token'])
-      console.log('*access-token*: ', RTPayload)
+      console.log('*refresh-token payload*: ', RTPayload)
       return true
     }
   }
