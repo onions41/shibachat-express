@@ -55,8 +55,8 @@ async function startApolloServer(typeDefs, resolvers) {
   app.use(cookieParser())
 
   // Endpoint for getting new tokens
-  refreshTokens.bind({}, prisma)
-  app.post('/refresh-token', refreshTokens)
+  const refreshTokensBound = refreshTokens.bind({}, prisma)
+  app.post('/refresh-token', refreshTokensBound)
 
   const httpServer = http.createServer(app)
   const server = new ApolloServer({
