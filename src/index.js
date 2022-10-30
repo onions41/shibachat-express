@@ -1,5 +1,4 @@
 // Module imports
-import path from 'path'
 import http from 'http'
 import express from 'express'
 import * as dotenv from 'dotenv'
@@ -14,33 +13,20 @@ import {
   ApolloServerPluginLandingPageLocalDefault
 } from 'apollo-server-core'
 
-// GraphQL
-import { loadFilesSync } from '@graphql-tools/load-files'
-import { mergeTypeDefs, mergeResolvers } from '@graphql-tools/merge'
-
 // Internal imports
 import refreshTokens from './auth/refreshTokens'
+import schema from './executableSchema'
 
 // process.env
 dotenv.config()
 
-// Get all the files in ./typeDefs and merge them together
-const typesArray = loadFilesSync(
-  path.join(__dirname, './typeDefs'), { extensions: ['graphql'] }
-)
-const typeDefs = mergeTypeDefs(typesArray)
-
-// Get all the files in ./resolvers and merge them together
-const resolversArray = loadFilesSync(
-  path.join(__dirname, './resolvers'), { extensions: ['js'] }
-)
-const resolvers = mergeResolvers(resolversArray)
-
 // Get user model
 const prisma = new PrismaClient()
 
-// Adds middlewares and starts server
-async function startApolloServer(typeDefs, resolvers) {
+/**
+ * Adds middlewares and starts the server
+ */
+async function main() {
   const app = express()
 
   // Apply CORS
@@ -60,8 +46,7 @@ async function startApolloServer(typeDefs, resolvers) {
 
   const httpServer = http.createServer(app)
   const server = new ApolloServer({
-    typeDefs,
-    resolvers,
+    schema,
     context: ({ req, res }) => ({ req, res, prisma }),
     csrfPrevention: true,
     cache: 'bounded',
@@ -86,4 +71,4 @@ async function startApolloServer(typeDefs, resolvers) {
   )
 }
 
-startApolloServer(typeDefs, resolvers)
+main()
