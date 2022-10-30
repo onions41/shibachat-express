@@ -27,6 +27,8 @@
   "dependencies": {
     "@graphql-tools/load-files": "^6.6.1",
     "@graphql-tools/merge": "^8.3.6",
+    "@graphql-tools/schema": "^9.0.5",
+    "@graphql-tools/utils": "^8.13.0",
     "@prisma/client": "^4.5.0",
     "apollo-server-core": "^3.10.3",
     "apollo-server-express": "^3.10.3",
