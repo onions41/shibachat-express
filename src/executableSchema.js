@@ -48,7 +48,7 @@ function requiresAuthDirectiveTransformer(schema, directiveName = 'requiresAuth'
             throw new Error('***@requiresAuth directive - Your access token is not valid')
           }
           // Access token is valid - Authorized - so pass the userId into context
-          context.userId = payload.userId
+          context.meId = payload.userId
 
           return await resolve(parent, args, context, info)
           // end of custom code
