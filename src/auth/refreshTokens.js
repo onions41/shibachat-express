@@ -38,9 +38,9 @@ export default async function refreshTokens(prisma, req, res) {
   }
 
   // tokenVesion might be incremented to revoke all existing tokens via a mutation
-  if (user.tokenVersion !== payload.tokenVersion) {
-    return res.send({ ok: false, accessToken: '' })
-  }
+  // if (user.tokenVersion !== payload.tokenVersion) {
+  //   return res.send({ ok: false, accessToken: '' })
+  // }
 
   attachRefreshToken(res, createRefreshToken(user))
 
