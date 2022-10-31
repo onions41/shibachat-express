@@ -1,0 +1,14 @@
+type Query {
+  user: User! @requiresAuth
+}
+
+type User {
+  id: Int!
+  nickname: String!
+  sentFriendRequests: [User]!
+  receivedFriendRequests: [User]! 
+}
+
+type Mutation {
+  sendFriendRequest(friendId: Int!): Boolean! @requiresAuth
+}
