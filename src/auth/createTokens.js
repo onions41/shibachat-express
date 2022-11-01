@@ -5,7 +5,7 @@ export function createAccessToken(user) {
   return sign(
     { userId: user.id },
     process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: '10d' }
+    { expiresIn: '1d' }
   )
 }
 
@@ -16,6 +16,6 @@ export function createRefreshToken(user) {
   return sign(
     { userId: user.id, tokenVersion: user.tokenVersion },
     process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: '5w' }
+    { expiresIn: '6d' }
   )
 }
