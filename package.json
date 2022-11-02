@@ -41,5 +41,8 @@
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
     "yup": "^0.32.11"
+  },
+  "prisma": {
+    "seed": "babel-node prisma/seed.js"
   }
 }
