@@ -1,14 +1,15 @@
 type Query {
   user: User! @requiresAuth
+  users: [User!]! @requiresAuth
 }
 
 type User {
   id: Int!
   nickname: String!
-  sentFriendRequests: [User]!
-  receivedFriendRequests: [User]! 
+  sentFriendRequests: [User!]!
+  receivedFriendRequests: [User!]! 
 }
 
 type Mutation {
-  sendFriendRequest(friendId: Int!): Boolean! @requiresAuth
+  sendFriendRequest(friendId: Int!): User! @requiresAuth
 }
