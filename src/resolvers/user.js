@@ -67,7 +67,35 @@ export default {
 
       // Mapping to get at the nested User objects
       return results.map((e) => e.requester)
+    },
+
+    receivedFReqFromMe: async ({ id }, _args, { prisma, meId }) => {
+      // result will be null if the fReq is not found
+      const result = await prisma.friendRequest.findUnique({
+        where: {
+          requesterId_requesteeId: {
+            requesterId: meId,
+            requesteeId: id
+          }
+        }
+      })
+
+      if (result) { return true }
+      return false
     }
+
+    // isFriendsWithMe: async ({ id }, _args, { prisma, meId }) => {
+    //   // result will be null if the friend is not found
+    //   const result = await prisma.friend.findUnique({
+    //     where: {
+    //       userId: meId,
+    //       friendId: id
+    //     }
+    //   })
+
+    //   if (result) { return true }
+    //   return false
+    // }
   },
 
   Mutation: {

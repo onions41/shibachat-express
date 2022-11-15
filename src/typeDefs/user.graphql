@@ -7,7 +7,9 @@ type User {
   id: Int!
   nickname: String!
   sentFRequests: [User!]!
-  receivedFRequests: [User!]! 
+  receivedFRequests: [User!]!
+  receivedFReqFromMe: Boolean!
+  # isFriendsWithMe: Boolean!
 }
 
 type Mutation {
