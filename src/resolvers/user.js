@@ -26,7 +26,7 @@ export default {
   },
 
   User: {
-    sentFriendRequests: async ({ id }, _args, { prisma }) => {
+    sentFRequests: async ({ id }, _args, { prisma }) => {
       // This SQL would work just as well.
       // SELECT users.id, users.nickname
       // FROM friend_requests JOIN users
@@ -51,7 +51,7 @@ export default {
       return results.map((e) => e.requestee)
     },
 
-    receivedFriendRequests: async ({ id }, _args, { prisma }) => {
+    receivedFRequests: async ({ id }, _args, { prisma }) => {
       // Does not throw errors if it doesn't find anything. Just returns [].
       const results = await prisma.friendRequest.findMany({
         where: { requesteeId: id },
@@ -71,7 +71,7 @@ export default {
   },
 
   Mutation: {
-    sendFriendRequest: async (_parent, { friendId }, { prisma, meId }) => {
+    sendFRequest: async (_parent, { friendId }, { prisma, meId }) => {
       if (friendId === meId) {
         throw new Error('***sendFriendRequest resolver: You cannot add yourself as a friend')
       }
