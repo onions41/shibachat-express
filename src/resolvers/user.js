@@ -1,5 +1,6 @@
 export default {
   Query: {
+    // Fetches a single user
     user: async (_parent, _args, { prisma, meId }) => {
       const user = await prisma.user.findUnique({
         where: { id: meId },
@@ -9,6 +10,18 @@ export default {
         throw new Error('***user Query could not find a user with that id')
       }
       return user
+    },
+
+    // Fetches multiple users
+    // Right now it just fetches all users
+    users: async (_parent, _args, { prisma }) => {
+      const users = await prisma.user.findMany({
+        select: {
+          id: true,
+          nickname: true
+        }
+      })
+      return users
     }
   },
 
@@ -63,6 +76,20 @@ export default {
         throw new Error('***sendFriendRequest resolver: You cannot add yourself as a friend')
       }
 
+      const friend = await prisma.user.findUnique({
+        where: {
+          id: friendId
+        },
+        select: {
+          id: true,
+          nickname: true
+        }
+      })
+      // Must throw error manually as findUnique does not
+      if (!friend) {
+        throw new Error('Could not find a Shiba with that nickname')
+      }
+
       // Throws error if cannot be created
       await prisma.friendRequest.create({
         data: {
@@ -71,7 +98,7 @@ export default {
         }
       })
 
-      return true
+      return friend
     }
   }
 }
