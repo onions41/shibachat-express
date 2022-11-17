@@ -6,10 +6,22 @@ type Query {
 type User {
   id: Int!
   nickname: String!
-  sentFRequests: [User!]!
-  receivedFRequests: [User!]!
+  # sentFRequests: [User!]!
+  receivedFRequests: [FRequest!]!
   receivedFReqFromMe: Boolean!
   # isFriendsWithMe: Boolean!
+}
+
+type FRequest {
+  requesteeId: Int!
+  status: FRequestStatus!
+  requester: User!
+}
+
+enum FRequestStatus {
+  SENT
+  ACCEPTED
+  REJECTED
 }
 
 type Mutation {
