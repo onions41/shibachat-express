@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -16,13 +13,16 @@ model User {
   id Int @id @default(autoincrement())
   nickname String @unique
   password String
+
   requested FriendRequest[] @relation("requester")
-  requestedBy FriendRequest[] @relation("requestee")  
+  requestedBy FriendRequest[] @relation("requestee")
+
+  // friends Friend[] @relation("user")
+  // befriendedBy Friend[] @relation("friend")
+  
   // groups Members[] // m-n with Group
   // groupInvitations GroupInvitations[]
   // groupMessages GroupMessage[]
-  // befriendedBy Friends[] @relation("friend") // requestee
-  // friends Friends[] @relation("user")
   // messagedBy DirectMessages[] @relation("receiver")
   // messaged DirectMessages[] @relation("sender")
   @@map("users")
@@ -33,9 +33,25 @@ model FriendRequest {
   requesterId Int @map("requester_id")
   requestee User @relation("requestee", fields: [requesteeId], references: [id])
   requesteeId Int @map("requestee_id")
+  status FRequestStatus @default(SENT)
   @@id([requesterId, requesteeId])
   @@map("friend_requests")
 }
+
+enum FRequestStatus {
+  SENT
+  ACCEPTED
+  REJECTED
+}
+
+// model Friend {
+//   user User @relation("user", fields: [userId], references: [id])
+//   userId Int @map("user_id")
+//   friend User @relation("friend", fields: [friendId], references: [id])
+//   friendId Int @map("friend_id")
+//   @@id([userId, friendId])
+//   @@map("friends")
+// }
 
 // model Group {
 //   id Int @id @default(autoincrement())
@@ -74,16 +90,6 @@ model FriendRequest {
 //   user_id Int
 //   @@id([group_id, user_id])
 //   @@map("group_invitations")
-// }
-
-// User-User join table
-// model Friends {
-//   user User @relation("user", fields: [user_id], references: [id])
-//   user_id Int
-//   friend User @relation("friend", fields: [friend_id], references: [id])
-//   friend_id Int
-//   @@id([user_id, friend_id])
-//   @@map("friends")
 // }
 
 // model DirectMessages {
