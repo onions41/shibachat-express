@@ -1,3 +1,3 @@
 type Mutation {
-  sendFRequest(friendId: Int!): User! @requiresAuth
+  sendFRequest(friendId: Int!): FriendRequest! @requiresAuth
 }

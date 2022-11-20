@@ -1,7 +1,7 @@
 type User {
   id: Int!
   nickname: String!
-  # sentFRequests: [User!]!
+  sentFRequests: [FriendRequest!]!
   receivedFRequests: [FriendRequest!]!
   receivedFReqFromMe: Boolean!
   # isFriendsWithMe: Boolean!
@@ -9,7 +9,9 @@ type User {
 
 type FriendRequest {
   requester: User!
-  requesteeId: Int!
+  requesterId: Int!
+  requestee: User!
+  requesteeId: Int!  
   status: FRequestStatus!
 }
 
@@ -18,4 +20,3 @@ enum FRequestStatus {
   ACCEPTED
   REJECTED
 }
-
