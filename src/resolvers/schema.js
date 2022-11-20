@@ -27,17 +27,19 @@ export default {
 
     receivedFRequests: async ({ id }, _args, { prisma }) => {
       // Does not throw errors if it doesn't find anything. Just returns [].
+      const result = await prisma.friendRequest.findMany({
+        where: { requesteeId: id }
+      })
+
+      console.log('***User.receivedFRequests: ', result)
+
+      return result
+    },
+
+    sentFRequests: async ({ id }, _args, { prisma }) => {
+      // Does not throw errors if it doesn't find anything. Just returns [].
       return await prisma.friendRequest.findMany({
-        where: { requesteeId: id },
-        select: {
-          status: true,
-          requester: {
-            select: {
-              id: true,
-              nickname: true
-            }
-          }
-        }
+        where: { requesterId: id }
       })
     },
 
@@ -69,4 +71,31 @@ export default {
     //   return false
     // }
   },
+
+  FriendRequest: {
+    // TODO: The 2 resolvers requester and requestee is idential.
+    // move this out to a commons folder
+    requester: async ({ requesterId }, _args, { prisma }) => {
+      // TODO: Consider replacing with findUniqueOrThrow
+      const user = await prisma.user.findUnique({
+        where: { id: requesterId },
+        select: { id: true, nickname: true }
+      })
+      if (!user) {
+        throw new Error('***user Query could not find a user with that id')
+      }
+      return user
+    },
+
+    requestee: async ({ requesteeId }, _args, { prisma }) => {
+      const user = await prisma.user.findUnique({
+        where: { id: requesteeId },
+        select: { id: true, nickname: true }
+      })
+      if (!user) {
+        throw new Error('***user Query could not find a user with that id')
+      }
+      return user
+    }
+  }
 }

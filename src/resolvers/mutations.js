@@ -20,14 +20,16 @@ export default {
       }
 
       // Throws error if cannot be created
-      await prisma.friendRequest.create({
+      return await prisma.friendRequest.create({
         data: {
           requesterId: meId,
           requesteeId: friendId
         }
-      })
-
-      return friend
+      }) // Returning the created friendRequest obj.
+      // Did not use select or include options as I wall all
+      // scalar fields to be selected and non of the type fields tolibraries
+      // be loaded eagerly. (the type fields are taken care of by the
+      // type resolvers.)
     }
   }
 }
