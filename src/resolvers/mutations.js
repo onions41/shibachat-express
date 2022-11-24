@@ -30,6 +30,18 @@ export default {
       // scalar fields to be selected and non of the type fields tolibraries
       // be loaded eagerly. (the type fields are taken care of by the
       // type resolvers.)
+    },
+
+    cancelFRequest: async (_parent, { friendId }, { meId, prisma }) => {
+      // Throws error if the friend request is not found
+      return await prisma.friendRequest.delete({
+        where: {
+          meId_friendId: {
+            meId,
+            friendId
+          }
+        }
+      })
     }
   }
 }

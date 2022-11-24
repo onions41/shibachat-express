@@ -1,3 +1,4 @@
 type Mutation {
   sendFRequest(friendId: Int!): FriendRequest! @requiresAuth
+  cancelFRequest(friendId: Int!): FriendRequest! @requiresAuth
 }
