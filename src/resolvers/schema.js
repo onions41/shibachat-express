@@ -28,7 +28,7 @@ export default {
     receivedFRequests: async ({ id }, _args, { prisma }) => {
       // Does not throw errors if it doesn't find anything. Just returns [].
       const result = await prisma.friendRequest.findMany({
-        where: { requesteeId: id }
+        where: { friendId: id }
       })
 
       console.log('***User.receivedFRequests: ', result)
@@ -39,7 +39,7 @@ export default {
     sentFRequests: async ({ id }, _args, { prisma }) => {
       // Does not throw errors if it doesn't find anything. Just returns [].
       return await prisma.friendRequest.findMany({
-        where: { requesterId: id }
+        where: { meId: id }
       })
     },
 
@@ -47,9 +47,9 @@ export default {
       // result will be null if the fReq is not found
       const result = await prisma.friendRequest.findUnique({
         where: {
-          requesterId_requesteeId: {
-            requesterId: meId,
-            requesteeId: id
+          meId_friendId: {
+            meId,
+            friendId: id
           }
         }
       })
@@ -75,10 +75,10 @@ export default {
   FriendRequest: {
     // TODO: The 2 resolvers requester and requestee is idential.
     // move this out to a commons folder
-    requester: async ({ requesterId }, _args, { prisma }) => {
+    me: async ({ meId }, _args, { prisma }) => {
       // TODO: Consider replacing with findUniqueOrThrow
       const user = await prisma.user.findUnique({
-        where: { id: requesterId },
+        where: { id: meId },
         select: { id: true, nickname: true }
       })
       if (!user) {
@@ -87,9 +87,9 @@ export default {
       return user
     },
 
-    requestee: async ({ requesteeId }, _args, { prisma }) => {
+    friend: async ({ friendId }, _args, { prisma }) => {
       const user = await prisma.user.findUnique({
-        where: { id: requesteeId },
+        where: { id: friendId },
         select: { id: true, nickname: true }
       })
       if (!user) {

@@ -14,8 +14,8 @@ model User {
   nickname String @unique
   password String
 
-  requested FriendRequest[] @relation("requester")
-  requestedBy FriendRequest[] @relation("requestee")
+  requested FriendRequest[] @relation("me")
+  requestedBy FriendRequest[] @relation("friend")
 
   // friends Friend[] @relation("user")
   // befriendedBy Friend[] @relation("friend")
@@ -29,12 +29,12 @@ model User {
 }
 
 model FriendRequest {
-  requester User @relation("requester", fields: [requesterId], references: [id])
-  requesterId Int @map("requester_id")
-  requestee User @relation("requestee", fields: [requesteeId], references: [id])
-  requesteeId Int @map("requestee_id")
+  me User @relation("me", fields: [meId], references: [id])
+  meId Int @map("me_id")
+  friend User @relation("friend", fields: [friendId], references: [id])
+  friendId Int @map("friend_id")
   status FRequestStatus @default(SENT)
-  @@id([requesterId, requesteeId])
+  @@id([meId, friendId])
   @@map("friend_requests")
 }
 

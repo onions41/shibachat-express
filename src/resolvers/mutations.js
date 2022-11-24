@@ -22,8 +22,8 @@ export default {
       // Throws error if cannot be created
       return await prisma.friendRequest.create({
         data: {
-          requesterId: meId,
-          requesteeId: friendId
+          meId,
+          friendId
         }
       }) // Returning the created friendRequest obj.
       // Did not use select or include options as I wall all
