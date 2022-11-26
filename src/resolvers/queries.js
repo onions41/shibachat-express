@@ -7,7 +7,7 @@ export default {
         select: { id: true, nickname: true }
       })
       if (!user) {
-        throw new Error('***user Query could not find a user with that id')
+        throw new Error("***user Query could not find a user with that id")
       }
       return user
     },

@@ -3,18 +3,18 @@
  *  if the request had a valid refresh token in it
  */
 
-import { verify } from 'jsonwebtoken'
-import { createAccessToken, createRefreshToken } from './createTokens'
-import attachRefreshToken from './attachRefreshToken'
+import { verify } from "jsonwebtoken"
+import { createAccessToken, createRefreshToken } from "./createTokens"
+import attachRefreshToken from "./attachRefreshToken"
 
 // Can by async, you'd need to make it async to fetch from database
 export default async function refreshTokens(prisma, req, res) {
-  console.log('****/refresh-token middleware was hit*******')
-  const refreshToken = req.cookies['refresh-token']
+  console.log("****/refresh-token middleware was hit*******")
+  const refreshToken = req.cookies["refresh-token"]
 
   // If the request cookie didn't contain a refresh token
   if (!refreshToken) {
-    return res.send({ ok: false, accessToken: '' })
+    return res.send({ ok: false, accessToken: "" })
   }
 
   // If the request cookie contained an invalid refresh token
@@ -23,7 +23,7 @@ export default async function refreshTokens(prisma, req, res) {
     payload = verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
   } catch (err) {
     console.log(err)
-    return res.send({ ok: false, accessToken: '' })
+    return res.send({ ok: false, accessToken: "" })
   }
 
   // token is valid and we can send back an access token
@@ -34,7 +34,7 @@ export default async function refreshTokens(prisma, req, res) {
   })
 
   if (!user) {
-    return res.send({ ok: false, accessToken: '' })
+    return res.send({ ok: false, accessToken: "" })
   }
 
   // tokenVesion might be incremented to revoke all existing tokens via a mutation

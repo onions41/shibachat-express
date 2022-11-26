@@ -1,10 +1,10 @@
 // Module imports
-import bcrypt from 'bcrypt'
+import bcrypt from "bcrypt"
 
 // Internal imports
-import { createAccessToken, createRefreshToken } from '../auth/createTokens'
-import attachRefreshToken from '../auth/attachRefreshToken'
-import authInput from '../inputValidation/authInput'
+import { createAccessToken, createRefreshToken } from "../auth/createTokens"
+import attachRefreshToken from "../auth/attachRefreshToken"
+import authInput from "../inputValidation/authInput"
 
 export default {
   Query: {},
@@ -26,13 +26,13 @@ export default {
       })
       // Must throw error manually as findUnique does not
       if (!user) {
-        throw new Error('Could not find a Shiba with that nickname')
+        throw new Error("Could not find a Shiba with that nickname")
       }
 
       // Compares the entered password with the saved password
       const valid = await bcrypt.compare(password, user.password)
       if (!valid) {
-        throw new Error('Incorrect password')
+        throw new Error("Incorrect password")
       }
 
       // Login successful so return an access token
@@ -73,11 +73,10 @@ export default {
     logout: async (_parent, _args, { res }) => {
       // Just needs to send back '' as a refresh token in the cookie
       // Frontend can delete its access token by itself.
-      attachRefreshToken(res, '')
+      attachRefreshToken(res, "")
       return true
     }
 
     // revokeTokens: async () => {
-
   } // End of mutations
 }

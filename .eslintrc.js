@@ -3,34 +3,41 @@ module.exports = {
     browser: true,
     es2021: true
   },
-  extends: 'standard',
+  extends: "standard",
   overrides: [
     {
-      files: ['*.graphql'],
-      parser: '@graphql-eslint/eslint-plugin',
-      plugins: ['@graphql-eslint'],
+      files: ["*.graphql"],
+      parser: "@graphql-eslint/eslint-plugin",
+      plugins: ["@graphql-eslint"],
       rules: {
-        '@graphql-eslint/known-type-names': 'error'
+        "@graphql-eslint/known-type-names": "error"
       }
     }
   ],
   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module'
+    ecmaVersion: "latest",
+    sourceType: "module"
   },
-  ignorePatterns: ['/repl'],
+  ignorePatterns: ["/repl"],
   rules: {
-    'space-before-function-paren': ['error', {
-      anonymous: 'never',
-      named: 'never',
-      asyncArrow: 'always'
-    }],
-    'arrow-parens': ['error', 'always'],
-    'max-len': ['error', {
-      ignoreStrings: true,
-      ignoreUrls: true,
-      comments: 120
-    }],
-    'no-unused-vars': 1
+    "space-before-function-paren": [
+      "error",
+      {
+        anonymous: "never",
+        named: "never",
+        asyncArrow: "always"
+      }
+    ],
+    "arrow-parens": ["error", "always"],
+    "max-len": [
+      "error",
+      {
+        ignoreStrings: true,
+        ignoreUrls: true,
+        comments: 120
+      }
+    ],
+    "no-unused-vars": 1,
+    quotes: ["error", "double"]
   }
 }

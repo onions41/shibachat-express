@@ -31,7 +31,7 @@ export default {
         where: { friendId: id }
       })
 
-      console.log('***User.receivedFRequests: ', result)
+      console.log("***User.receivedFRequests: ", result)
 
       return result
     },
@@ -54,7 +54,9 @@ export default {
         }
       })
 
-      if (result) { return true }
+      if (result) {
+        return true
+      }
       return false
     }
 
@@ -82,7 +84,7 @@ export default {
         select: { id: true, nickname: true }
       })
       if (!user) {
-        throw new Error('***user Query could not find a user with that id')
+        throw new Error("***user Query could not find a user with that id")
       }
       return user
     },
@@ -93,7 +95,7 @@ export default {
         select: { id: true, nickname: true }
       })
       if (!user) {
-        throw new Error('***user Query could not find a user with that id')
+        throw new Error("***user Query could not find a user with that id")
       }
       return user
     }
