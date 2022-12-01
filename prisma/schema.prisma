@@ -17,8 +17,8 @@ model User {
   requested FriendRequest[] @relation("me")
   requestedBy FriendRequest[] @relation("friend")
 
-  // friends Friend[] @relation("user")
-  // befriendedBy Friend[] @relation("friend")
+  friends Friend[] @relation("me")
+  befriendedBy Friend[] @relation("friend")
   
   // groups Members[] // m-n with Group
   // groupInvitations GroupInvitations[]
@@ -44,16 +44,16 @@ enum FRequestStatus {
   REJECTED
 }
 
-// model Friend {
-//   user User @relation("user", fields: [userId], references: [id])
-//   userId Int @map("user_id")
-//   friend User @relation("friend", fields: [friendId], references: [id])
-//   friendId Int @map("friend_id")
-//   @@id([userId, friendId])
-//   @@map("friends")
-// }
+model Friend {
+  me User @relation("me", fields: [meId], references: [id])
+  meId Int @map("me_id")
+  friend User @relation("friend", fields: [friendId], references: [id])
+  friendId Int @map("friend_id")
+  @@id([meId, friendId])
+  @@map("friends")
+}
 
-// model Group {
+// model Group {user
 //   id Int @id @default(autoincrement())
 //   name String
 //   members Members[]

@@ -1,4 +1,13 @@
 type Mutation {
   sendFRequest(friendId: Int!): FriendRequest! @requiresAuth
   cancelFRequest(friendId: Int!): FriendRequest! @requiresAuth
+  acceptFRequest(friendId: Int!): AcceptFReqResponse! @requiresAuth
+}
+
+# Mutation response types
+
+type AcceptFReqResponse {
+  acceptedFRequest: FriendRequest!
+  mirroredFRequest: FriendRequest
+  friend: User!
 }

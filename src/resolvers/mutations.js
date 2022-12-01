@@ -44,6 +44,86 @@ export default {
           }
         }
       })
+    },
+
+    acceptFRequest: async (_parent, { friendId }, { meId, prisma }) => {
+      // Updates the status of the friend request being accepted
+      // Throws RecordNotFound exception if not found
+      const acceptedFRequest = await prisma.friendRequest.update({
+        where: {
+          meId_friendId: {
+            // Front end inputs the id of the user that sent me the friend request as friendId
+            meId: friendId,
+            friendId: meId
+          }
+        },
+        data: {
+          status: "ACCEPTED"
+        }
+      })
+
+      // Updates the status of the friend request that's opposite the request being accepted if exists
+      let mirroredFRequest
+      try {
+        mirroredFRequest = await prisma.friendRequest.update({
+          where: {
+            meId_friendId: {
+              // Flipped from above
+              meId,
+              friendId
+            }
+          },
+          data: {
+            status: "ACCEPTED"
+          }
+        })
+      } catch {
+        // There was no mirrored friend request
+        await prisma.friendRequest.create({
+          data: {
+            meId,
+            friendId,
+            status: "ACCEPTED"
+          }
+        })
+
+        mirroredFRequest = null
+      }
+
+      // Creates the entries in the friend join table. Both directions.
+      try {
+        await prisma.friend.create({
+          data: {
+            meId,
+            friendId
+          }
+        })
+      } catch {
+        // Douplicate. Do nothing.
+      }
+      try {
+        await prisma.friend.create({
+          data: {
+            meId: friendId,
+            friendId: meId
+          }
+        })
+      } catch {
+        // Douplicate. Do nothing.
+      }
+
+      // If this throws, that would mean that the prospective friend user was deleted.
+      const friend = await prisma.user.findUniqueOrThrow({
+        where: {
+          id: friendId
+        }
+      })
+
+      return {
+        acceptedFRequest,
+        mirroredFRequest, // Reminder: Nullable
+        friend
+      }
     }
   }
 }
