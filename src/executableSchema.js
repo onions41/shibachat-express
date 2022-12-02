@@ -38,7 +38,7 @@ function requiresAuthDirectiveTransformer(
       )
       if (requiresAuthDirective) {
         const { resolve = defaultFieldResolver } = fieldConfig
-        fieldConfig.resolve = async function (parent, args, context, info) {
+        fieldConfig.resolve = async function(parent, args, context, info) {
           // The custom code to extend the resolver for the annotated field. Surrounding code is boilerplate
           const accessToken = context.req.headers["access-token"]
           if (!accessToken) {
