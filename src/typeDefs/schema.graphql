@@ -1,8 +1,8 @@
 type User {
   id: Int!
   nickname: String!
-  sentFRequests: [FriendRequest!]!
-  receivedFRequests: [FriendRequest!]!
+  sentFRequests: [FriendRequest!]! @mustBeMe
+  receivedFRequests: [FriendRequest!]! @mustBeMe
   receivedFReqFromMe: Boolean!
   # isFriendsWithMe: Boolean!
 }

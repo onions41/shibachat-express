@@ -67,7 +67,42 @@ function requiresAuthDirectiveTransformer(
   })
 }
 
+// Defining custom directive logic for @mustBeMe
+function mustBeMeDirectiveTransformer(
+  schema,
+  directiveName = "mustBeMe"
+) {
+  return mapSchema(schema, {
+    // Reminder: Square brackets are used for computed object property names. (Ie, computed key names)
+    // MapperKind.OBJECT_FIELD correspondes to directives on FIELD_DEFINITIONs
+    [MapperKind.OBJECT_FIELD]: (fieldConfig) => {
+      const mustBeMeDirective = getDirective(
+        schema,
+        fieldConfig,
+        directiveName
+      )
+      if (mustBeMeDirective) {
+        const { resolve = defaultFieldResolver } = fieldConfig
+        fieldConfig.resolve = async function(parent, args, context, info) {
+          // The custom code to extend the resolver for the annotated field. Surrounding code is boilerplate
+          if (context.meId !== parent.id) {
+            throw new Error(
+              "***@mustBeMe directive - You don't have access to this information"
+            )
+          }
+
+          return await resolve(parent, args, context, info)
+          // end of custom code
+        }
+
+        return fieldConfig
+      }
+    }
+  })
+}
+
 // Adds the directive
 schema = requiresAuthDirectiveTransformer(schema)
+schema = mustBeMeDirectiveTransformer(schema)
 
 export default schema

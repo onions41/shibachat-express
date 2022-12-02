@@ -5,3 +5,4 @@ type Mutation {
 }
 
 directive @requiresAuth on FIELD_DEFINITION
+directive @mustBeMe on FIELD_DEFINITION
