@@ -3,8 +3,9 @@ type User {
   nickname: String!
   sentFRequests: [FriendRequest!]! @mustBeMe
   receivedFRequests: [FriendRequest!]! @mustBeMe
+  friends: [User!]! @mustBeMe
   receivedFReqFromMe: Boolean!
-  # isFriendsWithMe: Boolean!
+  isFriendsWithMe: Boolean!
 }
 
 type FriendRequest {
