@@ -26,14 +26,56 @@ const userData = [
   }
 ]
 
+const friendRequestData = [
+  { senderId: 1, receiverId: 2, status: "ACCEPTED" },
+  { senderId: 2, receiverId: 1, status: "ACCEPTED" },
+  { senderId: 1, receiverId: 3, status: "ACCEPTED" },
+  { senderId: 3, receiverId: 1, status: "ACCEPTED" },
+  { senderId: 1, receiverId: 4, status: "ACCEPTED" },
+  { senderId: 4, receiverId: 1, status: "ACCEPTED" },
+  { senderId: 2, receiverId: 5, status: "ACCEPTED" },
+  { senderId: 5, receiverId: 2, status: "ACCEPTED" },
+  { senderId: 3, receiverId: 4, status: "ACCEPTED" },
+  { senderId: 4, receiverId: 3, status: "ACCEPTED" }
+]
+
+const friendData = [
+  { userId: 1, friendId: 2 },
+  { userId: 2, friendId: 1 },
+  { userId: 1, friendId: 3 },
+  { userId: 3, friendId: 1 },
+  { userId: 1, friendId: 4 },
+  { userId: 4, friendId: 1 },
+  { userId: 2, friendId: 5 },
+  { userId: 5, friendId: 2 },
+  { userId: 3, friendId: 4 },
+  { userId: 4, friendId: 3 }
+]
+
 async function main() {
   console.log("Start seeding ...")
+
+  // User
   for (const u of userData) {
-    const user = await prisma.user.create({
+    await prisma.user.create({
       data: u
     })
-    console.log(`Created user with id: ${user.id}`)
   }
+
+  // FriendRequest
+  for (const fr of friendRequestData) {
+    await prisma.friendRequest.create({
+      data: fr
+    })
+  }
+
+  // Friend
+  for (const f of friendData) {
+    await prisma.friend.create({
+      data: f
+    })
+  }
+
   console.log("Seeding finished.")
 }
 
