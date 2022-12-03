@@ -1,34 +1,9 @@
 export default {
   User: {
-    // sentFRequests: async ({ id }, _args, { prisma }) => {
-    //   // This SQL would work just as well.
-    //   // SELECT users.id, users.nickname
-    //   // FROM friend_requests JOIN users
-    //   // ON friend_requests.requestee_id = users.id
-    //   // WHERE friend_requests.requester_id = %i
-    //   // %i = id
-
-    //   // Does not throw errors if it doesn't find anything. Just returns [].
-    //   const results = await prisma.friendRequest.findMany({
-    //     where: { requesterId: id },
-    //     select: {
-    //       requestee: {
-    //         select: {
-    //           id: true,
-    //           nickname: true
-    //         }
-    //       }
-    //     }
-    //   })
-
-    //   // Mapping to get at the nested User objects
-    //   return results.map((e) => e.requestee)
-    // },
-
     receivedFRequests: async ({ id }, _args, { prisma }) => {
       // Does not throw errors if it doesn't find anything. Just returns [].
       const result = await prisma.friendRequest.findMany({
-        where: { friendId: id }
+        where: { receiverId: id }
       })
 
       console.log("***User.receivedFRequests: ", result)
@@ -39,7 +14,7 @@ export default {
     sentFRequests: async ({ id }, _args, { prisma }) => {
       // Does not throw errors if it doesn't find anything. Just returns [].
       return await prisma.friendRequest.findMany({
-        where: { meId: id }
+        where: { senderId: id }
       })
     },
 
@@ -47,9 +22,9 @@ export default {
       // result will be null if the fReq is not found
       const result = await prisma.friendRequest.findUnique({
         where: {
-          meId_friendId: {
-            meId,
-            friendId: id
+          senderId_receiverId: {
+            senderId: meId,
+            receiverId: id
           }
         }
       })
@@ -75,12 +50,10 @@ export default {
   },
 
   FriendRequest: {
-    // TODO: The 2 resolvers requester and requestee is idential.
-    // move this out to a commons folder
-    me: async ({ meId }, _args, { prisma }) => {
+    sender: async ({ senderId }, _args, { prisma }) => {
       // TODO: Consider replacing with findUniqueOrThrow
       const user = await prisma.user.findUnique({
-        where: { id: meId },
+        where: { id: senderId },
         select: { id: true, nickname: true }
       })
       if (!user) {
@@ -89,9 +62,9 @@ export default {
       return user
     },
 
-    friend: async ({ friendId }, _args, { prisma }) => {
+    receiver: async ({ receiverId }, _args, { prisma }) => {
       const user = await prisma.user.findUnique({
-        where: { id: friendId },
+        where: { id: receiverId },
         select: { id: true, nickname: true }
       })
       if (!user) {

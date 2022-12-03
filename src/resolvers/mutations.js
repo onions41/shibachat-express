@@ -1,7 +1,7 @@
 export default {
   Mutation: {
-    sendFRequest: async (_parent, { friendId }, { prisma, meId }) => {
-      if (friendId === meId) {
+    sendFRequest: async (_parent, { receiverId }, { prisma, meId }) => {
+      if (receiverId === meId) {
         throw new Error(
           "***sendFriendRequest resolver: You cannot add yourself as a friend"
         )
@@ -9,7 +9,7 @@ export default {
 
       const friend = await prisma.user.findUnique({
         where: {
-          id: friendId
+          id: receiverId
         },
         select: {
           id: true,
@@ -24,8 +24,8 @@ export default {
       // Throws error if cannot be created
       return await prisma.friendRequest.create({
         data: {
-          meId,
-          friendId
+          senderId: meId,
+          receiverId
         }
       }) // Returning the created friendRequest obj.
       // Did not use select or include options as I wall all
@@ -34,27 +34,27 @@ export default {
       // type resolvers.)
     },
 
-    cancelFRequest: async (_parent, { friendId }, { meId, prisma }) => {
+    cancelFRequest: async (_parent, { receiverId }, { meId, prisma }) => {
       // Throws error if the friend request is not found
       return await prisma.friendRequest.delete({
         where: {
-          meId_friendId: {
-            meId,
-            friendId
+          senderId_receiverId: {
+            senderId: meId,
+            receiverId
           }
         }
       })
     },
 
-    acceptFRequest: async (_parent, { friendId }, { meId, prisma }) => {
+    acceptFRequest: async (_parent, { senderId }, { meId, prisma }) => {
       // Updates the status of the friend request being accepted
       // Throws RecordNotFound exception if not found
       const acceptedFRequest = await prisma.friendRequest.update({
         where: {
-          meId_friendId: {
-            // Front end inputs the id of the user that sent me the friend request as friendId
-            meId: friendId,
-            friendId: meId
+          senderId_receiverId: {
+            // Front end inputs the id of the user that sent me the friend request as receiverId
+            senderId,
+            receiverId: meId
           }
         },
         data: {
@@ -67,10 +67,10 @@ export default {
       try {
         mirroredFRequest = await prisma.friendRequest.update({
           where: {
-            meId_friendId: {
+            senderId_receiverId: {
               // Flipped from above
-              meId,
-              friendId
+              senderId: meId,
+              receiverId: senderId
             }
           },
           data: {
@@ -81,8 +81,8 @@ export default {
         // There was no mirrored friend request
         await prisma.friendRequest.create({
           data: {
-            meId,
-            friendId,
+            senderId: meId,
+            receiverId: senderId,
             status: "ACCEPTED"
           }
         })
@@ -91,31 +91,18 @@ export default {
       }
 
       // Creates the entries in the friend join table. Both directions.
-      try {
-        await prisma.friend.create({
-          data: {
-            meId,
-            friendId
-          }
-        })
-      } catch {
-        // Douplicate. Do nothing.
-      }
-      try {
-        await prisma.friend.create({
-          data: {
-            meId: friendId,
-            friendId: meId
-          }
-        })
-      } catch {
-        // Douplicate. Do nothing.
-      }
+      await prisma.friend.createMany({
+        data: [
+          { userId: senderId, friendId: meId },
+          { userId: meId, friendId: senderId }
+        ],
+        skipDuplicates: true
+      })
 
       // If this throws, that would mean that the prospective friend user was deleted.
       const friend = await prisma.user.findUniqueOrThrow({
         where: {
-          id: friendId
+          id: senderId
         }
       })
 

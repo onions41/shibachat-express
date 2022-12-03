@@ -1,7 +1,7 @@
 type Mutation {
-  sendFRequest(friendId: Int!): FriendRequest! @requiresAuth
-  cancelFRequest(friendId: Int!): FriendRequest! @requiresAuth
-  acceptFRequest(friendId: Int!): AcceptFReqResponse! @requiresAuth
+  sendFRequest(receiverId: Int!): FriendRequest! @requiresAuth
+  cancelFRequest(receiverId: Int!): FriendRequest! @requiresAuth
+  acceptFRequest(senderId: Int!): AcceptFReqResponse! @requiresAuth
 }
 
 # Mutation response types

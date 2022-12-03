@@ -8,10 +8,10 @@ type User {
 }
 
 type FriendRequest {
-  me: User!
-  meId: Int!
-  friend: User!
-  friendId: Int!  
+  sender: User!
+  senderId: Int!
+  receiver: User!
+  receiverId: Int!  
   status: FRequestStatus!
 }
 
