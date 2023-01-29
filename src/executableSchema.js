@@ -74,7 +74,7 @@ function mustBeMeDirectiveTransformer(
 ) {
   return mapSchema(schema, {
     // Reminder: Square brackets are used for computed object property names. (Ie, computed key names)
-    // MapperKind.OBJECT_FIELD correspondes to directives on FIELD_DEFINITIONs
+    // MapperKind.OBJECT_FIELD correspondes to directives on FIELD_DEFINITIONs (eg @RequiresAuth)
     [MapperKind.OBJECT_FIELD]: (fieldConfig) => {
       const mustBeMeDirective = getDirective(
         schema,
