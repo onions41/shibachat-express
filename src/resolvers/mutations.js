@@ -111,6 +111,67 @@ export default {
         mirroredFRequest, // Reminder: Nullable
         friend
       }
+    },
+
+    unfriend: async (_parent, { friendId }, { prisma, meId }) => {
+      const friend = prisma.user.findUniqueOrThrow({
+        where: {
+          id: friendId
+        },
+        select: {
+          id: true,
+          nickname: true
+        }
+      })
+      // Below code is not reached if above cannot find the friend user.
+      // TODO: Cascade delete all friendships and friendrequests when a user is deleted.
+
+      // Delete throws error if not found
+      // Delete the friend requests
+      const sentFRequest = prisma.friendRequest.delete({
+        where: {
+          senderId_receiverId: {
+            senderId: meId,
+            receiverId: friendId
+          }
+        }
+      })
+      const receivedFRequest = prisma.friendRequest.delete({
+        where: {
+          senderId_receiverId: {
+            senderId: friendId,
+            receiverId: meId
+          }
+        }
+      })
+
+      // Delete the friendship records
+      const forwardFriendship = prisma.friend.delete({
+        where: {
+          userId_friendId: {
+            userId: meId,
+            friendId
+          }
+        }
+      })
+      const reverseFriendship = prisma.friend.delete({
+        where: {
+          userId_friendId: {
+            userId: friendId,
+            friendId: meId
+          }
+        }
+      })
+
+      // Transaction used to keep changes atomic
+      await prisma.$transaction([
+        sentFRequest,
+        receivedFRequest,
+        forwardFriendship,
+        reverseFriendship
+      ])
+
+      return friend
     }
   }
 }
