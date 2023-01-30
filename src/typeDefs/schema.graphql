@@ -23,9 +23,9 @@ enum FRequestStatus {
 }
 
 type Message {
-  sender: User!
-  senderId: Int!
-  receiver: User!
-  receiverId: Int!
+  id: Int!
+  createdAt: String!
   textContent: String!
+  senderId: Int!
+  receiverId: Int!  
 }
