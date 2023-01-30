@@ -80,6 +80,17 @@ const friendData = [
   { userId: 5, friendId: 4 }
 ]
 
+const messageData = [
+  { textContent: "Hi Marge this is Homer, your husband", senderId: 1, receiverId: 2 },
+  { textContent: "Hi Homer this Marge, your wife", senderId: 2, receiverId: 1 },
+  { textContent: "Doh", senderId: 1, receiverId: 2 },
+  { textContent: "mmmhmmmm", senderId: 2, receiverId: 1 },
+  { textContent: "I want to eat donuts", senderId: 1, receiverId: 2 },
+  { textContent: "Get them from Kwikimart", senderId: 2, receiverId: 1 },
+  { textContent: "Okay, do you want anything?", senderId: 1, receiverId: 2 },
+  { textContent: "Get some flitstones chewable morphine", senderId: 2, receiverId: 1 }
+]
+
 async function main() {
   console.log("Start seeding ...")
 
@@ -90,7 +101,6 @@ async function main() {
   })
 
   // FriendRequest
-
   await prisma.friendRequest.createMany({
     data: friendRequestData,
     skipDuplicates: true
@@ -99,6 +109,12 @@ async function main() {
   // Friend
   await prisma.friend.createMany({
     data: friendData,
+    skipDuplicates: true
+  })
+
+  // Message
+  await prisma.message.createMany({
+    data: messageData,
     skipDuplicates: true
   })
 

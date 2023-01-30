@@ -19,6 +19,9 @@ model User {
 
   friends Friend[] @relation("user")
   befriendedBy Friend[] @relation("friend")
+
+  sentMessage Message[] @relation("sender")
+  receivedMessage Message[] @relation("receiver")
   
   // groups Members[] // m-n with Group
   // groupInvitations GroupInvitations[]
@@ -52,6 +55,17 @@ model Friend {
   @@id([userId, friendId])
   @@map("friends")
 }
+
+model Message {
+  id Int @id @default(autoincrement())
+  textContent String @map("text_content")
+  sender User @relation("sender", fields: [senderId], references: [id])
+  senderId Int @map("sender_id")
+  receiver User @relation("receiver", fields: [receiverId], references: [id])
+  receiverId Int @map("receiver_id")
+  @@map("messages")
+}
+
 
 // model Group {user
 //   id Int @id @default(autoincrement())
@@ -91,14 +105,3 @@ model Friend {
 //   @@id([group_id, user_id])
 //   @@map("group_invitations")
 // }
-
-// model DirectMessages {
-//   id Int @id @default(autoincrement())
-//   text_content String
-//   sender User @relation("sender", fields: [sender_id], references: [id])
-//   sender_id Int
-//   receiver User @relation("receiver", fields: [receiver_id], references: [id])
-//   receiver_id Int
-//   @@map("direct_messages")
-// }
-
