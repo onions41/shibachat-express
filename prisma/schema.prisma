@@ -58,6 +58,7 @@ model Friend {
 
 model Message {
   id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
   textContent String @map("text_content")
   sender User @relation("sender", fields: [senderId], references: [id])
   senderId Int @map("sender_id")
