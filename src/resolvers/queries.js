@@ -22,6 +22,26 @@ export default {
         }
       })
       return users
+    },
+
+    messages: async (_parent, { friendId }, { prisma, meId }) => {
+      // findMany returns empty array when nothing is found
+      const messages = await prisma.message.findMany({
+        where: {
+          OR: [
+            {
+              senderId: meId,
+              receiverId: friendId
+            },
+            {
+              senderId: friendId,
+              receiverId: meId
+            }
+          ]
+        }
+      })
+
+      return messages
     }
   }
 }

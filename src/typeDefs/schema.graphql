@@ -21,3 +21,11 @@ enum FRequestStatus {
   ACCEPTED
   REJECTED
 }
+
+type Message {
+  sender: User!
+  senderId: Int!
+  receiver: User!
+  receiverId: Int!
+  textContent: String!
+}
