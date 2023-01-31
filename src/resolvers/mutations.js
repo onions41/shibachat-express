@@ -172,6 +172,21 @@ export default {
       ])
 
       return friend
+    }, // End of unfriend
+
+    sendMessage: async (
+      _parent,
+      { receiverId, textContent },
+      { prisma, meId }
+    ) => {
+      // Throws error if cannot be created
+      return await prisma.message.create({
+        data: {
+          senderId: meId,
+          receiverId,
+          textContent
+        }
+      }) // Returning the created Message obj.
     }
   }
 }
