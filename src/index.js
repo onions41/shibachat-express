@@ -5,6 +5,8 @@ import * as dotenv from "dotenv"
 import cors from "cors"
 import cookieParser from "cookie-parser"
 import { PrismaClient } from "@prisma/client"
+import { WebSocketServer } from "ws"
+import { useServer } from "graphql-ws/lib/use/ws"
 
 // Apollo
 import { ApolloServer } from "apollo-server-express"
@@ -46,7 +48,22 @@ async function main() {
   const refreshTokensBound = refreshTokens.bind({}, prisma)
   app.post("/refresh-token", refreshTokensBound)
 
+  // Required as dependency when creating and starting Apollo ws and http servers
   const httpServer = http.createServer(app)
+
+  // Creating the WebSocket server
+  const wsServer = new WebSocketServer({
+    // This is the `httpServer` we created in a previous step.
+    server: httpServer,
+    // Pass a different path here if your ApolloServer serves at
+    // a different path.
+    path: "/graphql"
+  })
+
+  // Hand in the executable schema and have the WebSocketServer start listening.
+  const serverCleanup = useServer({ schema }, wsServer)
+
+  // instantiates the Apollo Http GraphQL Server
   const server = new ApolloServer({
     schema,
     context: ({ req, res }) => ({ req, res, prisma }),
@@ -56,7 +73,18 @@ async function main() {
     // TODO: Might want to turn this off in production
     introspection: true,
     plugins: [
+      // Proper shutdown for the HTTP server
       ApolloServerPluginDrainHttpServer({ httpServer }),
+      // Proper shutdown for the WebSocket server
+      {
+        async serverWillStart() {
+          return {
+            async drainServer() {
+              await serverCleanup.dispose()
+            }
+          }
+        }
+      },
       // Enables Apollo Explorer on landing page
       ApolloServerPluginLandingPageLocalDefault({ embed: true })
     ]
