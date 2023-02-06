@@ -182,7 +182,7 @@ export default {
       { prisma, meId }
     ) => {
       // Throws error if cannot be created, returns the created message.
-      const sentMessage = await prisma.message.create({
+      const message = await prisma.message.create({
         data: {
           senderId: meId,
           receiverId,
@@ -190,9 +190,9 @@ export default {
         }
       })
 
-      pubsub.publish("SENT_MESSAGE", { sentMessage })
+      pubsub.publish("NEW_MESSAGE", { newMessage: message })
 
-      return sentMessage
+      return message
     }
   }
 }
