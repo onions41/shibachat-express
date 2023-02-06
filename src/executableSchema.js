@@ -1,11 +1,13 @@
-// Mudule imports
+// Module imports
 import path from "path"
-import { verify } from "jsonwebtoken"
 import { loadFilesSync } from "@graphql-tools/load-files"
 import { mergeTypeDefs, mergeResolvers } from "@graphql-tools/merge"
 import { makeExecutableSchema } from "@graphql-tools/schema"
 import { mapSchema, getDirective, MapperKind } from "@graphql-tools/utils"
 import { defaultFieldResolver } from "graphql"
+
+// Internal imports
+import verifyAccessToken from "./auth/verifyAccessToken"
 
 // Get all the files in ./typeDefs and merge them together
 const typesArray = loadFilesSync(path.join(__dirname, "./typeDefs"), {
@@ -40,23 +42,9 @@ function requiresAuthDirectiveTransformer(
         const { resolve = defaultFieldResolver } = fieldConfig
         fieldConfig.resolve = async function(parent, args, context, info) {
           // The custom code to extend the resolver for the annotated field. Surrounding code is boilerplate
-          const accessToken = context.req.headers["access-token"]
-          if (!accessToken) {
-            throw new Error(
-              "***@requiresAuth directive - Did not find an access token in req the header"
-            )
-          }
-          let payload
-          try {
-            payload = verify(accessToken, process.env.ACCESS_TOKEN_SECRET)
-          } catch {
-            throw new Error(
-              "***@requiresAuth directive - Your access token is not valid"
-            )
-          }
-          // Access token is valid - Authorized - so pass the userId into context
-          context.meId = payload.userId
-
+          const accessToken = context?.req?.headers?.["access-token"]
+          // returns meId or throws if null or not valid
+          context.meId = verifyAccessToken(accessToken)
           return await resolve(parent, args, context, info)
           // end of custom code
         }
@@ -68,19 +56,12 @@ function requiresAuthDirectiveTransformer(
 }
 
 // Defining custom directive logic for @mustBeMe
-function mustBeMeDirectiveTransformer(
-  schema,
-  directiveName = "mustBeMe"
-) {
+function mustBeMeDirectiveTransformer(schema, directiveName = "mustBeMe") {
   return mapSchema(schema, {
     // Reminder: Square brackets are used for computed object property names. (Ie, computed key names)
     // MapperKind.OBJECT_FIELD correspondes to directives on FIELD_DEFINITIONs (eg @RequiresAuth)
     [MapperKind.OBJECT_FIELD]: (fieldConfig) => {
-      const mustBeMeDirective = getDirective(
-        schema,
-        fieldConfig,
-        directiveName
-      )
+      const mustBeMeDirective = getDirective(schema, fieldConfig, directiveName)
       if (mustBeMeDirective) {
         const { resolve = defaultFieldResolver } = fieldConfig
         fieldConfig.resolve = async function(parent, args, context, info) {

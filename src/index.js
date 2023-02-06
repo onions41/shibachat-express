@@ -18,6 +18,7 @@ import {
 // Internal imports
 import refreshTokens from "./auth/refreshTokens"
 import schema from "./executableSchema"
+import verifyAccessToken from "./auth/verifyAccessToken"
 
 // process.env
 dotenv.config()
@@ -61,7 +62,22 @@ async function main() {
   })
 
   // Hand in the executable schema and have the WebSocketServer start listening.
-  const serverCleanup = useServer({ schema }, wsServer)
+  // https://github.com/enisdenjo/graphql-ws/blob/master/docs/interfaces/server.ServerOptions.md#properties
+  const serverCleanup = useServer(
+    {
+      schema,
+      // Grabs the access token from connection params so it can be used in the subscription resolver
+      // subscription resolver runs BEFORE its field directive, so that's no good for authentication for subscriptions
+      context: (ctx) => {
+        ctx.meId = verifyAccessToken(ctx?.connectionParams?.["access-token"])
+        return ctx
+      },
+      onDisconnect: () => {
+        console.log("Websocket Disconnected!")
+      }
+    },
+    wsServer
+  )
 
   // instantiates the Apollo Http GraphQL Server
   const server = new ApolloServer({
