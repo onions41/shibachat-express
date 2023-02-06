@@ -1,3 +1,5 @@
+import { pubsub } from "../resolverDependencies"
+
 export default {
   Mutation: {
     sendFRequest: async (_parent, { receiverId }, { prisma, meId }) => {
@@ -179,14 +181,18 @@ export default {
       { receiverId, textContent },
       { prisma, meId }
     ) => {
-      // Throws error if cannot be created
-      return await prisma.message.create({
+      // Throws error if cannot be created, returns the created message.
+      const sentMessage = await prisma.message.create({
         data: {
           senderId: meId,
           receiverId,
           textContent
         }
-      }) // Returning the created Message obj.
+      })
+
+      pubsub.publish("SENT_MESSAGE", { sentMessage })
+
+      return sentMessage
     }
   }
 }
