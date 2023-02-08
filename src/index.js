@@ -69,6 +69,7 @@ async function main() {
       // Grabs the access token from connection params so it can be used in the subscription resolver
       // subscription resolver runs BEFORE its field directive, so that's no good for authentication for subscriptions
       context: (ctx) => {
+        console.log("Websocket Context Runs")
         ctx.meId = verifyAccessToken(ctx?.connectionParams?.["access-token"])
         return ctx
       },
@@ -82,7 +83,9 @@ async function main() {
   // instantiates the Apollo Http GraphQL Server
   const server = new ApolloServer({
     schema,
-    context: ({ req, res }) => ({ req, res, prisma }),
+    context: ({ req, res }) => {
+      return { req, res, prisma }
+    },
     csrfPrevention: true,
     cache: "bounded",
     // Allows schema to be downloaded.

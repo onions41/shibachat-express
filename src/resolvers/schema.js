@@ -6,8 +6,6 @@ export default {
         where: { receiverId: meId }
       })
 
-      console.log("***User.receivedFRequests: ", result)
-
       return result
     },
 
