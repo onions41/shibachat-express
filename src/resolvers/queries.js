@@ -38,6 +38,9 @@ export default {
               receiverId: meId
             }
           ]
+        },
+        orderBy: {
+          createdAt: "desc"
         }
       })
 
