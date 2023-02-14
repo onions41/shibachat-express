@@ -6,6 +6,7 @@ type User {
   friends: [User!]! @mustBeMe
   receivedFReqFromMe: Boolean!
   isFriendsWithMe: Boolean!
+  latestMessageWithMe: Message
 }
 
 type FriendRequest {

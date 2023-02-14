@@ -75,6 +75,29 @@ export default {
         return true
       }
       return false
+    },
+
+    latestMessageWithMe: async ({ id: friendId }, _args, { prisma, meId }) => {
+      // Returns null if nothing found (return type is nullable)
+      const message = await prisma.message.findFirst({
+        where: {
+          OR: [
+            {
+              senderId: meId,
+              receiverId: friendId
+            },
+            {
+              senderId: friendId,
+              receiverId: meId
+            }
+          ]
+        },
+        orderBy: { createdAt: "desc" }
+      })
+
+      console.table(message)
+
+      return message
     }
   },
 
