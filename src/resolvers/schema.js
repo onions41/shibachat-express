@@ -95,8 +95,6 @@ export default {
         orderBy: { createdAt: "desc" }
       })
 
-      console.table(message)
-
       return message
     }
   },
