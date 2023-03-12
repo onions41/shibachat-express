@@ -9,7 +9,18 @@ export default {
         )
       }
 
-      const friend = await prisma.user.findUnique({
+      // Checks to see if already friends
+      const friend = await prisma.friend.findUnique({
+        where: {
+          userId_friendId: { userId: meId, friendId: receiverId }
+        }
+      })
+      // Throw error if already friends
+      if (friend) {
+        throw new Error("You are already friends with this Inu")
+      }
+
+      const receiver = await prisma.user.findUnique({
         where: {
           id: receiverId
         },
@@ -19,7 +30,7 @@ export default {
         }
       })
       // Must throw error manually as findUnique does not
-      if (!friend) {
+      if (!receiver) {
         throw new Error("Could not find a Shiba with that nickname")
       }
 
@@ -49,47 +60,52 @@ export default {
     },
 
     acceptFRequest: async (_parent, { senderId }, { meId, prisma }) => {
-      // Updates the status of the friend request being accepted
-      // Throws RecordNotFound exception if not found
-      const acceptedFRequest = await prisma.friendRequest.update({
-        where: {
-          senderId_receiverId: {
-            // Front end inputs the id of the user that sent me the friend request as receiverId
-            senderId,
-            receiverId: meId
+      // Checks to see if the friend request being accepted exists
+      try {
+        // Throws a generic NotFoundError
+        await prisma.friendRequest.findUniqueOrThrow({
+          where: {
+            senderId_receiverId: { senderId, receiverId: meId }
           }
-        },
-        data: {
-          status: "ACCEPTED"
+        })
+      } catch (error) {
+        throw new Error(
+          "The friend request you are trying to accept does not exist."
+        )
+      }
+
+      // Checks to see if the user that sent the friend request exists
+      let friend
+      try {
+        // Throws a generic NotFoundError
+        friend = await prisma.user.findUniqueOrThrow({
+          where: {
+            id: senderId
+          }
+        })
+      } catch (error) {
+        throw new Error(
+          "The user that sent you this friend request does not exist"
+        )
+      }
+
+      // Deletes the friendRequest that was sent to me
+      const acceptedFRequest = await prisma.friendRequest.delete({
+        where: {
+          senderId_receiverId: { senderId, receiverId: meId }
         }
       })
 
-      // Updates the status of the friend request that's opposite the request being accepted if exists
+      // Deletes the friendRequest I sent to them (if exists)
       let mirroredFRequest
       try {
-        mirroredFRequest = await prisma.friendRequest.update({
+        const mirroredFRequest = await prisma.friendRequest.delete({
           where: {
-            senderId_receiverId: {
-              // Flipped from above
-              senderId: meId,
-              receiverId: senderId
-            }
-          },
-          data: {
-            status: "ACCEPTED"
+            senderId_receiverId: { senderId: meId, receiverId: senderId }
           }
         })
       } catch {
-        // There was no mirrored friend request
-        await prisma.friendRequest.create({
-          data: {
-            senderId: meId,
-            receiverId: senderId,
-            status: "ACCEPTED"
-          }
-        })
-
-        mirroredFRequest = null
+        // shallow the error.
       }
 
       // Creates the entries in the friend join table. Both directions.
@@ -99,13 +115,6 @@ export default {
           { userId: meId, friendId: senderId }
         ],
         skipDuplicates: true
-      })
-
-      // If this throws, that would mean that the prospective friend user was deleted.
-      const friend = await prisma.user.findUniqueOrThrow({
-        where: {
-          id: senderId
-        }
       })
 
       return {
