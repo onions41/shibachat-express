@@ -36,14 +36,13 @@ model FriendRequest {
   senderId Int @map("sender_id")
   receiver User @relation("receiver", fields: [receiverId], references: [id])
   receiverId Int @map("receiver_id")
-  status FRequestStatus @default(SENT)
+  status FRequestStatus @default(PENDING)
   @@id([senderId, receiverId])
   @@map("friend_requests")
 }
 
 enum FRequestStatus {
-  SENT
-  ACCEPTED
+  PENDING
   REJECTED
 }
 
