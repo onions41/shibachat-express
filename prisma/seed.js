@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { PrismaClient } from "@prisma/client"
 import bcrypt from "bcrypt"
 
@@ -101,22 +102,22 @@ async function main() {
   })
 
   // FriendRequest
-  await prisma.friendRequest.createMany({
-    data: friendRequestData,
-    skipDuplicates: true
-  })
+  // await prisma.friendRequest.createMany({
+  //   data: friendRequestData,
+  //   skipDuplicates: true
+  // })
 
   // Friend
-  await prisma.friend.createMany({
-    data: friendData,
-    skipDuplicates: true
-  })
+  // await prisma.friend.createMany({
+  //   data: friendData,
+  //   skipDuplicates: true
+  // })
 
   // Message
-  await prisma.message.createMany({
-    data: messageData,
-    skipDuplicates: true
-  })
+  // await prisma.message.createMany({
+  //   data: messageData,
+  //   skipDuplicates: true
+  // })
 
   console.log("Seeding finished.")
 }
