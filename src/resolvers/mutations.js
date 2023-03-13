@@ -125,36 +125,7 @@ export default {
     },
 
     unfriend: async (_parent, { friendId }, { prisma, meId }) => {
-      const friend = prisma.user.findUniqueOrThrow({
-        where: {
-          id: friendId
-        },
-        select: {
-          id: true,
-          nickname: true
-        }
-      })
-      // Below code is not reached if above cannot find the friend user.
       // TODO: Cascade delete all friendships and friendrequests when a user is deleted.
-
-      // Delete throws error if not found
-      // Delete the friend requests
-      const sentFRequest = prisma.friendRequest.delete({
-        where: {
-          senderId_receiverId: {
-            senderId: meId,
-            receiverId: friendId
-          }
-        }
-      })
-      const receivedFRequest = prisma.friendRequest.delete({
-        where: {
-          senderId_receiverId: {
-            senderId: friendId,
-            receiverId: meId
-          }
-        }
-      })
 
       // Delete the friendship records
       const forwardFriendship = prisma.friend.delete({
@@ -175,14 +146,21 @@ export default {
       })
 
       // Transaction used to keep changes atomic
-      await prisma.$transaction([
-        sentFRequest,
-        receivedFRequest,
-        forwardFriendship,
-        reverseFriendship
-      ])
+      await prisma.$transaction([forwardFriendship, reverseFriendship])
 
-      return friend
+      const friend = await prisma.user.findUnique({
+        where: {
+          id: friendId
+        },
+        select: {
+          id: true,
+          nickname: true
+        }
+      })
+
+      // If the friend user was not found due to being deleted,
+      // still need to return at least the id
+      return !friend ? { id: friendId } : friend
     }, // End of unfriend
 
     sendMessage: async (
