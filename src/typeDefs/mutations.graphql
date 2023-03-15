@@ -2,6 +2,7 @@ type Mutation {
   sendFRequest(receiverId: Int!): FriendRequest! @requiresAuth
   cancelFRequest(receiverId: Int!): FriendRequest! @requiresAuth
   acceptFRequest(senderId: Int!): AcceptFReqResponse! @requiresAuth
+  rejectFRequest(senderId: Int!): FriendRequest! @requiresAuth
   unfriend(friendId: Int!): User! @requiresAuth
   sendMessage(receiverId: Int!, textContent: String!): Message! @requiresAuth
 }
