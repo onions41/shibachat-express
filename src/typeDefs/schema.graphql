@@ -20,7 +20,7 @@ type FriendRequest {
 enum FRequestStatus {
   SENT
   ACCEPTED
-  REJECTED
+  BLOCKED
 }
 
 type Message {

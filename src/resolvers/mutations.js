@@ -124,8 +124,8 @@ export default {
       }
     },
 
-    rejectFRequest: async (_parent, { senderId }, { prisma, meId }) => {
-      // Updates the friend request's status to "REJECTED"
+    blockFRequest: async (_parent, { senderId }, { prisma, meId }) => {
+      // Updates the friend request's status to "BLOCKED"
       const fRequest = await prisma.friendRequest.update({
         where: {
           senderId_receiverId: {
@@ -134,7 +134,7 @@ export default {
           }
         },
         data: {
-          status: "REJECTED"
+          status: "BLOCKED"
         }
       })
 
