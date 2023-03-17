@@ -43,7 +43,7 @@ model FriendRequest {
 
 enum FRequestStatus {
   PENDING
-  REJECTED
+  BLOCKED
 }
 
 model Friend {
