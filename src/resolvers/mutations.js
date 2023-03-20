@@ -141,6 +141,23 @@ export default {
       return fRequest
     },
 
+    unblockFRequest: async (_parent, { senderId }, { prisma, meId }) => {
+      // Updates the friend request's status to "PENDING"
+      const fRequest = await prisma.friendRequest.update({
+        where: {
+          senderId_receiverId: {
+            senderId,
+            receiverId: meId
+          }
+        },
+        data: {
+          status: "PENDING"
+        }
+      })
+
+      return fRequest
+    },
+
     unfriend: async (_parent, { friendId }, { prisma, meId }) => {
       // TODO: Cascade delete all friendships and friendrequests when a user is deleted.
 
