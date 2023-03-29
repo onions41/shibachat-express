@@ -1,7 +1,6 @@
 // Module imports
 import http from "http"
 import express from "express"
-import * as dotenv from "dotenv"
 import cors from "cors"
 import cookieParser from "cookie-parser"
 import { PrismaClient } from "@prisma/client"
@@ -19,9 +18,6 @@ import {
 import refreshTokens from "./auth/refreshTokens"
 import schema from "./executableSchema"
 import verifyAccessToken from "./auth/verifyAccessToken"
-
-// process.env
-dotenv.config()
 
 // Get user model
 const prisma = new PrismaClient()
