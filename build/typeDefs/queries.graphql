@@ -1,0 +1,5 @@
+type Query {
+  user(id: Int): User! @requiresAuth
+  users: [User!]! @requiresAuth
+  messages(friendId: Int!): [Message!]! @requiresAuth
+}

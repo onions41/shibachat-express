@@ -1,0 +1,31 @@
+type User {
+  id: Int!
+  nickname: String!
+  sentFRequests: [FriendRequest!]! @mustBeMe
+  receivedFRequests: [FriendRequest!]! @mustBeMe
+  friends: [User!]! @mustBeMe
+  receivedFReqFromMe: Boolean!
+  isFriendsWithMe: Boolean!
+  latestMessageWithMe: Message
+}
+
+type FriendRequest {
+  sender: User!
+  senderId: Int!
+  receiver: User!
+  receiverId: Int!  
+  status: FRequestStatus!
+}
+
+enum FRequestStatus {
+  PENDING
+  BLOCKED
+}
+
+type Message {
+  id: Int!
+  createdAt: String!
+  textContent: String!
+  senderId: Int!
+  receiverId: Int!  
+}

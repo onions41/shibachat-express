@@ -1,0 +1,8 @@
+type Mutation {
+  login(nickname: String!, password: String!): String!
+  register(nickname: String!, password: String!): String!
+  logout: Boolean!
+}
+
+directive @requiresAuth on FIELD_DEFINITION
+directive @mustBeMe on FIELD_DEFINITION
