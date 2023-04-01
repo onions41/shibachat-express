@@ -14,7 +14,7 @@ COPY build ./build
 COPY prisma ./prisma
 
 # Initialises primsa client using the schema.prisma
-RUN primsa generate
+RUN npx prisma generate
 
 # Sets process.env.NODE_ENV
 ENV NODE_ENV production
