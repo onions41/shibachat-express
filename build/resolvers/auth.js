@@ -65,7 +65,9 @@ var _default = {
       res,
       prisma
     }) => {
+      console.log("register resolver runs, args: ", args); // *************
       // Input validation with Yup.
+
       const {
         nickname,
         password
