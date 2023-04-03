@@ -28,15 +28,17 @@ const prisma = new PrismaClient()
 async function main() {
   const app = express()
 
-  // Apply CORS
-  // Configuration refrence https://github.com/expressjs/cors#configuration-options
-  app.use(
-    cors({
-      origin: process.env.REACT_CLIENT_ORIGIN,
-      // To allow cookie headers
-      credentials: true
-    })
-  )
+  // Apply CORS for dev environment. CORS is configured by Nginx in production.
+  if (process.env.NODE_ENV === "development") {
+    // Configuration refrence https://github.com/expressjs/cors#configuration-options
+    app.use(
+      cors({
+        origin: process.env.REACT_CLIENT_ORIGIN,
+        // To allow cookie headers
+        credentials: true
+      })
+    )
+  }
 
   // Parse cookies
   app.use(cookieParser())
