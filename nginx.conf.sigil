@@ -63,12 +63,6 @@ server {
     internal;
   }
 
-  add_header Access-Control-Allow-Origin * always;
-  add_header Access-Control-Allow-Methods "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS" always;
-  add_header Access-Control-Allow-Headers "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,access-token" always;
-  add_header Access-Control-Expose-Headers "Content-Length,Content-Range" always;
-  add_header Access-Control-Allow-Credentials true always;
-
   include {{ $.DOKKU_ROOT }}/{{ $.APP }}/nginx.conf.d/*.conf;
 {{ end }}
 }
@@ -140,6 +134,13 @@ server {
     root {{ $.DOKKU_LIB_ROOT }}/data/nginx-vhosts/dokku-errors;
     internal;
   }
+
+  add_header Access-Control-Allow-Origin * always;
+  add_header Access-Control-Allow-Methods "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS" always;
+  add_header Access-Control-Allow-Headers "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,access-token" always;
+  add_header Access-Control-Expose-Headers "Content-Length,Content-Range" always;
+  add_header Access-Control-Allow-Credentials true always;
+
   include {{ $.DOKKU_ROOT }}/{{ $.APP }}/nginx.conf.d/*.conf;
 }
 {{ else if eq $scheme "grpc"}}
