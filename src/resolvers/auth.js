@@ -56,16 +56,22 @@ export default {
       // Unique validation on nickname happens here.
       // Other database errors will be thrown here too. Ex, connectivity errors.
       // The returned user will become the payload of both tokens.
-      const payload = await prisma.user.create({
-        data: {
-          nickname,
-          password: hashedPassword
-        },
-        select: {
-          id: true,
-          nickname: true
-        }
-      })
+      let payload
+      try {
+        payload = await prisma.user.create({
+          data: {
+            nickname,
+            password: hashedPassword
+          },
+          select: {
+            id: true,
+            nickname: true
+          }
+        })
+      } catch (error) {
+        console.log("This is the error by create: ", error)
+        throw new Error("error")
+      }
       console.log("Prisma created the user, the use is the payload")
 
       // Registration was successful if no error was thrown by this point.
