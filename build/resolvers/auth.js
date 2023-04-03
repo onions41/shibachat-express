@@ -71,9 +71,11 @@ var _default = {
       const {
         nickname,
         password
-      } = await _authInput.default.validate(args); // This will always work because password is validated.
+      } = await _authInput.default.validate(args);
+      console.log("validation with yup run without error"); // This will always work because password is validated.
 
-      const hashedPassword = await _bcrypt.default.hash(password, 10); // Unique validation on nickname happens here.
+      const hashedPassword = await _bcrypt.default.hash(password, 10);
+      console.log("hashing works without error"); // Unique validation on nickname happens here.
       // Other database errors will be thrown here too. Ex, connectivity errors.
       // The returned user will become the payload of both tokens.
 
@@ -86,11 +88,13 @@ var _default = {
           id: true,
           nickname: true
         }
-      }); // Registration was successful if no error was thrown by this point.
+      });
+      console.log("Prisma created the user, the use is the payload"); // Registration was successful if no error was thrown by this point.
       // TODO: Raw errors are going straight to the front end right now.
       // I should log the errors and store them too later.
 
       (0, _attachRefreshToken.default)(res, (0, _createTokens.createRefreshToken)(payload));
+      console.log("Attach refresh token runs");
       return (0, _createTokens.createAccessToken)(payload);
     },
     logout: async (_parent, _args, {

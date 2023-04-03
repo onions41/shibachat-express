@@ -47,9 +47,11 @@ export default {
 
       // Input validation with Yup.
       const { nickname, password } = await authInput.validate(args)
+      console.log("validation with yup run without error")
 
       // This will always work because password is validated.
       const hashedPassword = await bcrypt.hash(password, 10)
+      console.log("hashing works without error")
 
       // Unique validation on nickname happens here.
       // Other database errors will be thrown here too. Ex, connectivity errors.
@@ -64,11 +66,13 @@ export default {
           nickname: true
         }
       })
+      console.log("Prisma created the user, the use is the payload")
 
       // Registration was successful if no error was thrown by this point.
       // TODO: Raw errors are going straight to the front end right now.
       // I should log the errors and store them too later.
       attachRefreshToken(res, createRefreshToken(payload))
+      console.log("Attach refresh token runs")
       return createAccessToken(payload)
     },
 
