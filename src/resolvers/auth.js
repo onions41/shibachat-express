@@ -43,6 +43,8 @@ export default {
     },
 
     register: async (_parent, args, { res, prisma }) => {
+      console.log("register resolver runs, args: ", args) // *************
+
       // Input validation with Yup.
       const { nickname, password } = await authInput.validate(args)
 
