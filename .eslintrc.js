@@ -18,7 +18,7 @@ module.exports = {
     ecmaVersion: "latest",
     sourceType: "module"
   },
-  ignorePatterns: ["/repl"],
+  ignorePatterns: ["/repl", "/build", "/node_modules"],
   rules: {
     "space-before-function-paren": [
       "error",
