@@ -48,6 +48,6 @@
     "yup": "^0.32.11"
   },
   "prisma": {
-    "seed": "babel-node prisma/seed.js"
+    "seed": "node prisma/seed.js"
   }
 }
