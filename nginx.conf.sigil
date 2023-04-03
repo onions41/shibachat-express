@@ -135,11 +135,33 @@ server {
     internal;
   }
 
-  add_header Access-Control-Allow-Origin 'http://localhost:3000' always;
-  add_header Access-Control-Allow-Methods 'GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS' always;
-  add_header Access-Control-Allow-Headers 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,access-token' always;
-  add_header Access-Control-Expose-Headers 'Content-Length,Content-Range' always;
-  add_header Access-Control-Allow-Credentials true always;
+  # CORS
+  {{ if eq "$request_method" "OPTIONS" }}
+      add_header 'Access-Control-Allow-Origin' 'http://localhost:3000' always;
+      add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+      add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,access-token';
+      add_header 'Access-Control-Max-Age' 1728000;
+      add_header 'Content-Type' 'text/plain; charset=utf-8';
+      add_header 'Content-Length' 0;
+      add_header 'Access-Control-Allow-Credentials' true always;
+      return 204;
+  {{ end }}
+  {{ if eq "$request_method" "POST" }}
+      add_header 'Access-Control-Allow-Origin' 'http://localhost:3000' always;
+      add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
+      add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,access-token' always;
+      add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range' always;
+      add_header 'Access-Control-Allow-Credentials' true always;
+  {{ end }}
+  {{ if eq "$request_method" "GET" }}
+      add_header 'Access-Control-Allow-Origin' 'http://localhost:3000' always;
+      add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
+      add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,access-token' always;
+      add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range' always;
+      add_header 'Access-Control-Allow-Credentials' true always;
+  {{ end }}
+
+  # End of CORS
 
   include {{ $.DOKKU_ROOT }}/{{ $.APP }}/nginx.conf.d/*.conf;
 }
